@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Amazing app to help you find the nearest MBTA station</title>
+    <meta charset="UTF-8">
+    <title>MBTA Helper</title>
+  	<link href="/static/style.css" rel="stylesheet" type="text/css">
 </head>
-
 <body>
-    <p>Hi</p>
-</body>
+    <h1>Hello! Welcome to MBTA Helper</h1>
+    <form action="/" method="post">
+        <label for="place">Enter a place name or address:</label>
+        <input type="text" name="place" id="place">
+        
+        <label for="transportation_type">Choose transportation type:</label>
+        <select name="transportation_type" id="transportation_type">
+          <option value="bus">Bus</option>
+          <option value="commuter_rail">Commuter Rail</option>
+          <option value="subway">Subway (T)</option>
+        </select>
 
+        <input type="submit" value="Submit">
+    </form>
+</body>
 </html>

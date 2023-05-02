@@ -1,57 +1,60 @@
-# Your API KEYS (you need to use your own keys - very long random characters)
-from config import MAPBOX_TOKEN, MBTA_API_KEY
+import json
+import urllib.request
+from urllib.parse import urlencode
+from urllib.parse import quote
 
-
-# Useful URLs (you need to add the appropriate parameters for your requests)
 MAPBOX_BASE_URL = "https://api.mapbox.com/geocoding/v5/mapbox.places"
+MAPBOX_TOKEN = 'pk.eyJ1IjoibWlrZWJvenphIiwiYSI6ImNsaDN1ejllNzBlZnozZXAzOGQzN2t4YTgifQ.nq1WX9DuSrH4Fw9jOZ6v8w'
+
 MBTA_BASE_URL = "https://api-v3.mbta.com/stops"
+MBTA_API_KEY = '2eb2b9cb49de41a3a8c96912bbd705e6'
 
+def build_mapbox_url(query):
+    encoded_query = quote(query)
+    params = {'access_token': MAPBOX_TOKEN, 'types': 'poi'}
+    encoded_params = urlencode(params)
+    return f"{MAPBOX_BASE_URL}/{encoded_query}.json?{encoded_params}"
 
-# A little bit of scaffolding if you want to use it
+def get_lat_lng(query):
+    url = build_mapbox_url(query)
+    with urllib.request.urlopen(url) as f:
+        response_text = f.read().decode('utf-8')
+        response_data = json.loads(response_text)
 
+    lat = response_data['features'][0]['geometry']['coordinates'][1]
+    lng = response_data['features'][0]['geometry']['coordinates'][0]
 
-def get_json(url: str) -> dict:
-    """
-    Given a properly formatted URL for a JSON web API request, return a Python JSON object containing the response to that request.
+    return lat, lng
 
-    Both get_lat_long() and get_nearest_station() might need to use this function.
-    """
-    pass
+def get_nearest_mbta_stop(lat, lng,transportation_type):
+    route_type_map = {
+      'bus': 3,
+      'commuter_rail': 2,
+      'subway': 0
+    }
+  
+    params = {
+        'api_key': MBTA_API_KEY,
+        'sort': 'distance',
+        'filter[latitude]': lat,
+        'filter[longitude]': lng,
+        'filter[route_type]': route_type_map[transportation_type]
+    }
 
+    encoded_params = urlencode(params)
+    url = f"{MBTA_BASE_URL}?{encoded_params}"
 
-def get_lat_long(place_name: str) -> tuple[str, str]:
-    """
-    Given a place name or address, return a (latitude, longitude) tuple with the coordinates of the given place.
+    with urllib.request.urlopen(url) as f:
+        response_text = f.read().decode('utf-8')
+        response_data = json.loads(response_text)
 
-    See https://docs.mapbox.com/api/search/geocoding/ for Mapbox Geocoding API URL formatting requirements.
-    """
-    pass
+    closest_stop = response_data['data'][0]
+    stop_name = closest_stop['attributes']['name']
+    wheelchair_accessible = closest_stop['attributes']['wheelchair_boarding']
 
+    return stop_name, wheelchair_accessible
 
-def get_nearest_station(latitude: str, longitude: str) -> tuple[str, bool]:
-    """
-    Given latitude and longitude strings, return a (station_name, wheelchair_accessible) tuple for the nearest MBTA station to the given coordinates.
-
-    See https://api-v3.mbta.com/docs/swagger/index.html#/Stop/ApiWeb_StopController_index for URL formatting requirements for the 'GET /stops' API.
-    """
-    pass
-
-
-def find_stop_near(place_name: str) -> tuple[str, bool]:
-    """
-    Given a place name or address, return the nearest MBTA stop and whether it is wheelchair accessible.
-
-    This function might use all the functions above.
-    """
-    pass
-
-
-def main():
-    """
-    You can test all the functions here
-    """
-    pass
-
-
-if __name__ == '__main__':
-    main()
+def find_stop_near(location,transportation_type):
+    lat, lng = get_lat_lng(location)
+    stop_name, wheelchair_accessible = get_nearest_mbta_stop(lat, lng,transportation_type)
+    return stop_name, wheelchair_accessible

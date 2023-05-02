@@ -1,0 +1,80 @@
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    color: #444;
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+/* Index page styles */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+label {
+    font-size: 20px;
+}
+
+input[type="text"] {
+    font-size: 18px;
+    padding: 5px;
+    width: 100%;
+    max-width: 400px;
+}
+
+input[type="submit"] {
+    font-size: 18px;
+    padding: 10px 20px;
+    background-color: #2d9cdb;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #1e7ba8;
+}
+
+/* mbta_station and error page styles */
+p {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+a {
+    font-size: 18px;
+    color: #2d9cdb;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+select {
+  width: 30%;
+  height:40px;
+  padding: 5px;
+  margin-left:auto;
+  margin-right:auto;
+  align-self:"center";
+  margin-bottom: 20px;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+}
